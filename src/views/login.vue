@@ -11,7 +11,7 @@
             <span>账号：</span>
             <el-input style="width: 300px"
                       placeholder="邮箱/电话/用户名"
-                      v-model="loginInfo.loginName">
+                      v-model="loginInfo.name">
             </el-input>
           </div>
           <div style="margin-top: 20px">
@@ -40,10 +40,7 @@
   export default {
     data () {
       return {
-        loginInfo: {
-          loginName: '',
-          pwd: '',
-        }
+        loginInfo: {}
       }
     },
     methods: {
@@ -51,9 +48,10 @@
         this.$router.push('/register')
       },
       Login: function () {
-        Login(this.loginInfo).then(res =>{
+        Login(this.loginInfo).then(res => {
           console.log(res)
-        }).catch(err =>{
+          this.$store.dispatch('SET_USER_INFO', res)
+        }).catch(err => {
           console.log(err)
         })
       }

@@ -56,7 +56,7 @@
           fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
           sources: [{
             type: 'video/mp4',
-            src: 'http://183.222.103.29/cache/sochy.tcdn.qq.com/music.qqvideo.tc.qq.com/f0029l2gmaw.mp4?vkey=A2211A998ABF9723DCC688575620C60DBE8923F764539511A2E19CA263301E38E34AF2495AEE774135442EAF0E04E7BC866F0C05D4A18B721CF9231AD17A49C03DB994FCBE7940B0CE6CC5AE734407E1709F80C1CA422F4267F38382C266A1E163CB536E5277ED8FE6DD6225C46FFFEE&ich_args2=391-03002011037085_f60829a6c623b68b5720d763b227bcd7_10004420_9c89622bd3c7f0d39732518939a83798_79504b0ff8769a0ef072e5c48788a9c8'//你的m3u8地址（必填）
+            src: ''//你的m3u8地址（必填）
           }],
           poster:'http://pic33.nipic.com/20131007/13639685_123501617185_2.jpg', //你的封面地址
           width: document.documentElement.clientWidth,
@@ -73,7 +73,7 @@
     },
     created () {
       axios.get('/api/videos/quanyecha').then(res => {
-        //this.playerOptions.sources[0].src = res.config.url
+        this.playerOptions.sources[0].src = res.config.url
       }).catch(err => {
         console.log(err)
       })
