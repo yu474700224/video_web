@@ -1,18 +1,112 @@
 <template>
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div>
+
+    <el-container>
+      <el-header>
+        <video-hanlder></video-hanlder>
+      </el-header>
+      <el-main>
+        <div style="display: flex;justify-content: space-between">
+          <div style="width: 60%;height: 60%">
+            <video-player class="video-player vjs-custom-skin"
+                          ref="videoPlayer"
+                          :playsinline="true"
+                          :options="playerOptions"
+                          @waiting="onWaiting($event)"
+            >
+            </video-player>
+          </div>
+          <div class="video-list">
+            <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
+              <li v-for="videoInfo in videoInfoList" class="infinite-list-item">
+                <videoShow :videoInfo=videoInfo></videoShow>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </el-main>
+    </el-container>
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+  import axios from 'axios'
+  import videoHanlder from '../components/videoHanlder'
+  import rightHtml from '../components/rightHmtl'
+  import videoShow from '../components/videoShow'
+  import { getVideoList } from '../api/api'
 
-export default {
-  name: 'home',
-  components: {
-    HelloWorld
+  export default {
+    components: {
+      videoHanlder,
+      rightHtml,
+      videoShow
+    },
+    data () {
+      return {
+        videoInfoList: [],
+        playerOptions: {
+          playbackRates: [0.7, 1.0, 1.5, 2.0], //播放速度
+          autoplay: false, //如果true,浏览器准备好时开始回放。
+          muted: false, // 默认情况下将会消除任何音频。
+          loop: false, // 导致视频一结束就重新开始。
+          preload: 'auto', // 建议浏览器在<video>加载元素后是否应该开始下载视频数据。auto浏览器选择最佳行为,立即开始加载视频（如果浏览器支持）
+          language: 'zh-CN',
+          aspectRatio: '16:9', // 将播放器置于流畅模式，并在计算播放器的动态大小时使用该值。值应该代表一个比例 - 用冒号分隔的两个数字（例如"16:9"或"4:3"）
+          fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
+          sources: [{
+            type: 'video/mp4',
+            src: 'http://183.222.103.29/cache/sochy.tcdn.qq.com/music.qqvideo.tc.qq.com/f0029l2gmaw.mp4?vkey=A2211A998ABF9723DCC688575620C60DBE8923F764539511A2E19CA263301E38E34AF2495AEE774135442EAF0E04E7BC866F0C05D4A18B721CF9231AD17A49C03DB994FCBE7940B0CE6CC5AE734407E1709F80C1CA422F4267F38382C266A1E163CB536E5277ED8FE6DD6225C46FFFEE&ich_args2=391-03002011037085_f60829a6c623b68b5720d763b227bcd7_10004420_9c89622bd3c7f0d39732518939a83798_79504b0ff8769a0ef072e5c48788a9c8'//你的m3u8地址（必填）
+          }],
+          poster:'http://pic33.nipic.com/20131007/13639685_123501617185_2.jpg', //你的封面地址
+          width: document.documentElement.clientWidth,
+          notSupportedMessage: '此视频暂无法播放，请稍后再试', //允许覆盖Video.js无法播放媒体源时显示的默认信息。
+          controlBar: {
+            timeDivider: true,
+            durationDisplay: true,
+            remainingTimeDisplay: false,
+            fullscreenToggle: true //全屏按钮
+          }
+        },
+        count: 0,
+      }
+    },
+    created () {
+      axios.get('/api/videos/quanyecha').then(res => {
+        //this.playerOptions.sources[0].src = res.config.url
+      }).catch(err => {
+        console.log(err)
+      })
+      getVideoList().then(res => {
+        this.videoInfoList = res
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    methods: {
+      load () {
+        getVideoList().then(res => {
+          this.videoInfoList = res
+        }).catch(err => {
+          console.log(err)
+        })
+      },
+      onWaiting(){
+        console.log("等待加载")
+      }
+    }
   }
-}
 </script>
+
+<style>
+  .video-list {
+    width: 35%;
+  }
+
+  .infinite-list {
+    height: 400px;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+</style>
