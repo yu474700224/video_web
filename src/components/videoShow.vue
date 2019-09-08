@@ -1,7 +1,9 @@
 <template>
-  <div style="margin-bottom: 10px;display: flex;">
+  <div style="margin-bottom: 10px;display: flex;" @click="RedirectVideo()">
     <div>
-      <img src="../assets/logo.png" height="200" width="200"/>
+      <video  width="200" >
+        <source :src=videoSrc>
+      </video>
     </div>
     <div>
       <div>
@@ -22,11 +24,16 @@
     },
     data () {
       return {
-
+        videoSrc:"http://127.0.0.1:9000/videos/" + this.videoInfo.name
       }
     },
     created () {
-
+      console.log(this.videoInfo)
+    },
+    methods:{
+      RedirectVideo(){
+        this.$emit("func",this.videoInfo)
+      }
     }
   }
 </script>

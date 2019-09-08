@@ -13,6 +13,7 @@
                           :playsinline="true"
                           :options="playerOptions"
                           @waiting="onWaiting($event)"
+
             >
             </video-player>
             <div class="video_info">
@@ -32,14 +33,16 @@
               <comment-car :commentList="commentList"></comment-car>
             </div>
           </div>
-          <div class="video-list">
+          <div class="video-list" >
             <ul class="infinite-list" v-infinite-scroll="load" style="overflow:auto">
               <li v-for="videoInfo in videoInfoList" class="infinite-list-item">
-                <videoShow :videoInfo=videoInfo></videoShow>
+                <videoShow :videoInfo=videoInfo  @func="RedirectVideos"></videoShow>
               </li>
             </ul>
           </div>
-          <div></div>
+          <div  @func="RedirectVideos">
+
+          </div>
 
         </div>
       </el-main>
@@ -142,6 +145,11 @@
           this.commentList = res
         }).catch(err =>{
         })
+      },
+      RedirectVideos(data){
+        this.playerOptions.sources[0].src = "http://127.0.0.1:9000/videos/" + data.name
+        this.videoInfo = data
+        this.getCommentList()
       }
     }
   }
