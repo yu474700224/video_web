@@ -49,8 +49,15 @@
       },
       Login: function () {
         Login(this.loginInfo).then(res => {
-          console.log(res)
-          this.$store.dispatch('SET_USER_INFO', res)
+          if(res.code === 1){
+            this.$store.dispatch('SET_USER_INFO', res.data)
+            this.$router.push("/")
+          }else{
+            this.$message({
+              message:res.data,
+              type:"error"
+            })
+          }
         }).catch(err => {
           console.log(err)
         })
